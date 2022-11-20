@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Auto_Login.Classes;
+using Auto_Login.UI;
+using Newtonsoft.Json;
+using SweetAlertSharp;
+using SweetAlertSharp.Enums;
+using System;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
-using Auto_Login.Classes;
-using Newtonsoft.Json;
 
 namespace Auto_Login
 {
@@ -12,7 +14,6 @@ namespace Auto_Login
     {
         public string JSON_FILE = AppDomain.CurrentDomain.BaseDirectory + "\\accounts.json";
         public string LOG_FILE = AppDomain.CurrentDomain.BaseDirectory + "\\log.txt";
-        public const string ENCRYPTION_KEY = "R5LeZYXebMn8F/N&";
         public bool FILE_EXISTS;
 
         public Main()
@@ -23,6 +24,19 @@ namespace Auto_Login
 
         private void Init()
         {
+            if(Properties.Settings.Default.startMinimized)
+            {
+                WindowState = FormWindowState.Minimized;
+                ShowInTaskbar = false;
+                notifyIcon.Visible = true;
+            }
+
+            if(!Directory.Exists(LocalClientController.ClientInfo()))
+            {
+                MessageBox.Show("Unable to locate League of Legends install directory. Is it installed?", "Error", MessageBoxButtons.OK ,MessageBoxIcon.Error);
+                Environment.Exit(0);
+            }
+
             if (!File.Exists(LOG_FILE))
             {
                 Log("No log file found");
@@ -37,17 +51,22 @@ namespace Auto_Login
                 Log("Data file found");
                 Log("Loading data...");
                 GetAccountData();
+                if (Account_comboBox.Items.Count > 0)
+                {
+                    Account_comboBox.SelectedIndex = 0;
+                    Remove_comboBox.SelectedIndex = 0;
+                }
+
                 return;
             }
-
             FILE_EXISTS = false;
             Log("Data file not found");
-            DialogResult log = MessageBox.Show("Unable to retrieve account data, would you like to create a new data file?", "Account Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if(log == DialogResult.Yes)
+            SweetAlertResult result = SweetAlert.Show("Account Data", "Unable to retrieve account data, would you like to create a new data file?", SweetAlertButton.YesNo, SweetAlertImage.QUESTION);
+            if(result == SweetAlertResult.YES)
                 File.Create(JSON_FILE).Close();
         }
 
-        public void Log(string log, bool clear = false)
+        internal void Log(string log, bool clear = false)
         {
             if (clear)
                 Console_listBox.Items.Clear();
@@ -89,6 +108,7 @@ namespace Auto_Login
             {
                 Account_comboBox.Items.Add(item.username);
                 Remove_comboBox.Items.Add(item.username + " [" + item.region + "]");
+                taskbar_Menu.Items.Add(item.username);
             }
             Log("Updated saved accounts");
         }
@@ -104,11 +124,11 @@ namespace Auto_Login
 
             if (Username_textBox.Text.Length < 1 || Password_textBox.Text.Length < 1 || Server_comboBox.Text.Length < 1)
             {
-                MessageBox.Show("Please enter a valid login to register", "Bad Credentials");
+                SweetAlertResult result = SweetAlert.Show("Bad Credentials", "Please enter a valid login to register", SweetAlertButton.OK, SweetAlertImage.ERROR);
                 return;
             }
 
-            AccountController.AddAccount(NEW_ACCOUNT[0], Cryptography.Encrypt(NEW_ACCOUNT[1], ENCRYPTION_KEY), NEW_ACCOUNT[2]);
+            AccountController.AddAccount(NEW_ACCOUNT[0], Cryptography.Encrypt(NEW_ACCOUNT[1], Properties.Settings.Default.encryption_Key), NEW_ACCOUNT[2]);
             UpdateAccountList();
             WriteAccountData();
             Account_comboBox.SelectedIndex = 0;
@@ -135,35 +155,37 @@ namespace Auto_Login
 
         private void Load_Btn_Click(object sender, EventArgs e)
         {
-            if (Account_comboBox.SelectedItem != null)
+            if(Account_comboBox.SelectedItem != null)
             {
-                Hide();
-                Thread WORK_THREAD = new Thread(() =>
-                {
-                    BeginInvoke((Action)delegate ()
-                    {
-                        UserAccount account = (UserAccount)AccountController.userAccounts[0];
-                        account = AccountController.GetAccount(Account_comboBox.Text);
-                        Log($"Loading account: {Account_comboBox.SelectedItem}", true);
-                        Login.Start(account.username, Cryptography.Decrypt(account.password, ENCRYPTION_KEY), account.region);
-                    });
-                });
-                WORK_THREAD.Start();
+                if(Properties.Settings.Default.showAlerts)
+                    SweetAlert.Show("Do not move mouse", "Do not move the mouse while logging in", SweetAlertButton.OK, SweetAlertImage.INFORMATION);
+
+                UserAccount account = (UserAccount)AccountController.userAccounts[0];
+                account = AccountController.GetAccount(Account_comboBox.Text);
+                Log($"Loading account: {Account_comboBox.SelectedItem}", true);
+                Login.Start(account.username, Cryptography.Decrypt(account.password, Properties.Settings.Default.encryption_Key), account.region);
+                WindowState = FormWindowState.Minimized;
             }
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StreamWriter LOGGER = new StreamWriter(LOG_FILE);
-            LOGGER.WriteLine(DateTime.Now.ToString());
-            LOGGER.WriteLine("____________________________");
-            foreach (var item in Console_listBox.Items)
+            try
             {
-                LOGGER.WriteLine(item.ToString());
+                StreamWriter LOGGER = new StreamWriter(LOG_FILE);
+                LOGGER.WriteLine(DateTime.Now.ToString());
+                LOGGER.WriteLine("____________________________");
+                foreach (var item in Console_listBox.Items)
+                {
+                    LOGGER.WriteLine(item.ToString());
+                }
+                LOGGER.Close();
+                Application.Exit();
             }
-            LOGGER.Close();
-
-            Application.Exit();
+            catch(Exception error)
+            {
+                Log("Error: " + error.ToString());
+            }
         }
 
         public class JsonObject
@@ -182,10 +204,43 @@ namespace Auto_Login
         private void Console_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             if(Console_checkBox.Checked)
-                Size = new Size(580, 248);
+                Size = new Size(581, 270);
 
             if (!Console_checkBox.Checked)
-                Size = new Size(335, 248);
+                Size = new Size(334, 270);
+        }
+
+        private void Settings_Btn_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.Show();
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            notifyIcon.Visible = false;
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = true;
+        }
+
+        private void taskbar_Menu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (Properties.Settings.Default.showAlerts)
+                SweetAlert.Show("Do not move mouse", "Do not move the mouse while logging in", SweetAlertButton.OK, SweetAlertImage.INFORMATION);
+
+            UserAccount account = (UserAccount)AccountController.userAccounts[0];
+            account = AccountController.GetAccount(e.ClickedItem.Text);
+            Log($"Loading account: {Account_comboBox.SelectedItem}", true);
+            Login.Start(account.username, Cryptography.Decrypt(account.password, Properties.Settings.Default.encryption_Key), account.region);
+        }
+
+        private void Main_Resize(object sender, EventArgs e)
+        {
+            if(WindowState == FormWindowState.Minimized)
+            {
+                ShowInTaskbar = false;
+                notifyIcon.Visible = true;
+            }
         }
     }
 }

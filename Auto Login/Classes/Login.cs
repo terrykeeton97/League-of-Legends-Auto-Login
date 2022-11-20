@@ -1,22 +1,16 @@
 ﻿using AutoIt;
 using System;
+using System.IO;
 
 namespace Auto_Login.Classes
 {
     internal class Login
     {
+
         internal static void Start(string username, string password, string region)
         {
-            if (region == "RU")
-            { 
-                Program.main.Log("Setting server to RU");
-                FileController.SetYAMLFile(ClientSettings.RU);
-            }
-            if(region == "EUW")
-            {
-                Program.main.Log("Setting server to EUW");
-                FileController.SetYAMLFile(ClientSettings.EUW);
-            }
+            Program.main.Log($"Setting server to {region}");
+            FileController.Init(region);
 
             if(LocalClientController.StartClient())
             {

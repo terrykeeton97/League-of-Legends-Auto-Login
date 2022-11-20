@@ -1,10 +1,11 @@
 ﻿using AutoIt;
 using Microsoft.Win32;
+using SweetAlertSharp.Enums;
+using SweetAlertSharp;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace Auto_Login.Classes
 {
@@ -19,7 +20,7 @@ namespace Auto_Login.Classes
                 return false;
 
             Program.main.Log("Client & windows found");
-            MessageBox.Show("Please close the client and any related windows", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            SweetAlertResult result = SweetAlert.Show("Client & windows found", "Please close the client and any related windows", SweetAlertButton.OK, SweetAlertImage.INFORMATION);
             return true;
         }
 
@@ -28,7 +29,7 @@ namespace Auto_Login.Classes
             if (!CheckForWindows())
             {
                 Program.main.Log("Attemping to start the client");
-                Process.Start(ClientInfo(false, true, false));
+                Process.Start(ClientInfo(false, true));
 
 
                 AutoItX.ProcessWait("RiotClientUx", 10);

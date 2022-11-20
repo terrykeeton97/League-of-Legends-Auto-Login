@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Auto_Login.Properties;
+using System;
 using System.Windows.Forms;
 
 namespace Auto_Login

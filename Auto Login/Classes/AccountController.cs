@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Windows.Forms;
+﻿using SweetAlertSharp.Enums;
+using SweetAlertSharp;
+using System.Collections;
 
 namespace Auto_Login.Classes
 {
@@ -14,7 +15,7 @@ namespace Auto_Login.Classes
                 UserAccount temp = (UserAccount)item;
                 if (temp.username.ToLower().Equals(username.ToLower()))
                 {
-                    MessageBox.Show("Account already exists", "Error");
+                    SweetAlert.Show("Error", "Account already exists", SweetAlertButton.YesNo, SweetAlertImage.ERROR);
                     return;
                 }
             }
