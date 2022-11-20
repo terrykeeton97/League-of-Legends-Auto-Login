@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using YamlDotNet.Serialization;
 
 namespace Auto_Login.Classes
@@ -16,8 +15,8 @@ namespace Auto_Login.Classes
             File.SetAttributes(LocalClientController.ClientInfo() + @"\Config\game.cfg", FileAttributes.Normal);
             File.SetAttributes(LocalClientController.ClientInfo() + @"\Config\PersistedSettings.json", FileAttributes.Normal);
 
-            var LEAGUE_CLIENT_SETTINGS = new DeserializerBuilder().Build();
-            LEAGUE_CLIENT_SETTINGS.Deserialize<Object>(File.ReadAllText(LocalClientController.ClientInfo(true)));
+            var deserializer = new DeserializerBuilder().Build();
+            var settings = deserializer.Deserialize<object>(File.ReadAllText(LocalClientController.ClientInfo(true)));
         }
     }
     class YamlObject
