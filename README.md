@@ -14,4 +14,5 @@ The data is created at runtime locally to the application, if you change the key
 
 ## Todo
 > Create a settings form so you can generate Encryption Keys and set them automatically ✅   
-> Automate the closing of the Client (League client isn't a normal case because Riot is shitty and can't program) ✅  
+> Automate the closing of the Client ✅ 
+> Iron out bugs and add more settings ❌
