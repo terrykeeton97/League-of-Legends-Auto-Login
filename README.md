@@ -5,14 +5,8 @@ I created this software to get a better understanding of how reading and writing
 
 This application has [AutoIt](https://www.autoitscript.com/site/) dependancies  
 
-## Encryption
-You can easily change the Encrpytion Key, it should look like this in Main.cs:  
-```csharp
-public const string ENCRYPTION_KEY = "R5LeZYXebMn8F/N&";
-```
-The data is created at runtime locally to the application, if you change the key for multiple accounts, you will need to make sure you save those keys so you have continued access to your passwords.
 
 ## Todo
 > Create a settings form so you can generate Encryption Keys and set them automatically ✅   
-> Automate the closing of the Client ✅ 
+> Automate the closing of the Client ✅  
 > Iron out bugs and add more settings ❌
