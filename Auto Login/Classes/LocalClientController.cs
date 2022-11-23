@@ -1,10 +1,7 @@
 ﻿using AutoIt;
 using Microsoft.Win32;
-using SweetAlertSharp.Enums;
-using SweetAlertSharp;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 
 namespace Auto_Login.Classes
@@ -12,37 +9,50 @@ namespace Auto_Login.Classes
     internal class LocalClientController
     {
 
-        internal static string[] WINDOW_NAMES = { "RiotClientUx", "LeagueClientUxRender", "LeagueClientUx" };
-        private static bool CheckForWindows()
-        {
-            Process[] client = WINDOW_NAMES.SelectMany(name => Process.GetProcessesByName(name)).ToArray();
-            if (client.Length == 0)
-                return false;
+        internal static IntPtr hWnd;
 
-            Program.main.Log("Client & windows found");
-            SweetAlertResult result = SweetAlert.Show("Client & windows found", "Please close the client and any related windows", SweetAlertButton.OK, SweetAlertImage.INFORMATION);
-            return true;
+        internal static void RestartClient()
+        {
+            bool isOpen = false;
+            var client = new Process { StartInfo = new ProcessStartInfo { FileName = ClientInfo(false, true) } };
+            try
+            {
+                foreach (Process process in Process.GetProcessesByName("RiotClientUx"))
+                {
+                    isOpen = true;
+                    process.Refresh();
+                    process.Kill();
+                    process.WaitForExit();
+                    Program.main.Log("Closing process");
+                }
+            }
+            catch 
+            {
+                Program.main.Log("Unable to close client");
+            }
+            if (isOpen)
+            {
+                Program.main.Log("Starting client in 10 seconds");
+                Thread.Sleep(10000);
+            }
+
+            Program.main.Log("Starting client");
+            client.Start();
+            client.Refresh();
+            Program.main.Log("Waiting for client to idle");
+            client.WaitForInputIdle();
         }
 
-        internal static bool StartClient()
+        internal static void Init()
         {
-            if (!CheckForWindows())
+            Program.main.Log("Restarting client");
+            RestartClient();
+            hWnd = Imports.FindWindow("RCLIENT", "Riot Client Main");
+            if (hWnd != IntPtr.Zero)
             {
-                Program.main.Log("Attemping to start the client");
-                Process.Start(ClientInfo(false, true));
-
-
-                AutoItX.ProcessWait("RiotClientUx", 10);
-                IntPtr hWnd = Imports.FindWindow("RCLIENT", "Riot Client Main");
-                if (hWnd != IntPtr.Zero)
-                {
-                    Program.main.Log("Moving window to 0,0");
-                    Imports.SetWindowPos(hWnd, IntPtr.Zero, 0, 0, 0, 0, Imports.SWP_NOSIZE | Imports.SWP_NOZORDER);
-                    Thread.Sleep(1000);
-                    return true;
-                }           
+                Program.main.Log("Moving window to 0,0");
+                Imports.SetWindowPos(hWnd, IntPtr.Zero, 0, 0, 0, 0, Imports.SWP_NOSIZE | Imports.SWP_NOZORDER);
             }
-            return false;
         }
 
         internal static string ClientInfo(bool configLocation = false, bool exeLocation = false, bool cfgLocation = false)
@@ -66,6 +76,13 @@ namespace Auto_Login.Classes
             }
             path = reg.ToString();
             return path;
+        }
+
+        private static bool IsRunning(Process process)
+        {
+            try { Process.GetProcessById(process.Id); }
+            catch (Exception) { return false; }
+            return true;
         }
     }
 }

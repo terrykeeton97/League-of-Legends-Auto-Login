@@ -22,8 +22,8 @@ namespace Auto_Login.UI
             ShowHide_checkBox.Checked = Properties.Settings.Default.passwordChar;
             Startup_checkBox.Checked = Properties.Settings.Default.systemStart;
             Minimized_checkBox.Checked = Properties.Settings.Default.startMinimized;
-            Language_comboBox.SelectedIndex = Properties.Settings.Default.prefLanguage;
-            Alerts_checkBox.Checked = Properties.Settings.Default.showAlerts;
+            Language_comboBox.Text = Properties.Settings.Default.prefLanguage;
+            Input_checkBox.Checked = Properties.Settings.Default.blockInput;
         }
         private void Settings_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -36,7 +36,7 @@ namespace Auto_Login.UI
             DialogResult dialog = MessageBox.Show("If you already have saved accounts on your current key, you wont be able to decrypt them and login.\n\nAre you sure you want to continue?", "Encryption",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
-            if (dialog == DialogResult.Yes) 
+            if (dialog == DialogResult.Yes)
             {
                 Properties.Settings.Default.encryption_Key = Cryptography.GenerateKey();
                 Program.main.Log("Generated new Encryption Key");
@@ -60,7 +60,7 @@ namespace Auto_Login.UI
 
         private void ShowHide_checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            if(ShowHide_checkBox.Checked)
+            if (ShowHide_checkBox.Checked)
             {
                 Key_textBox.UseSystemPasswordChar = true;
                 Properties.Settings.Default.passwordChar = true;
@@ -95,16 +95,6 @@ namespace Auto_Login.UI
             key.Close();
         }
 
-        private void Alerts_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (Alerts_checkBox.Checked)
-            {
-                Properties.Settings.Default.showAlerts = true;
-                return;
-            }
-            Properties.Settings.Default.showAlerts = false;
-        }
-
         private void PersisSettings_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             if (PersisSettings_checkBox.Checked)
@@ -115,13 +105,30 @@ namespace Auto_Login.UI
             Properties.Settings.Default.persistedSettings = false;
         }
 
-        private void Valorant_checkBox_CheckedChanged(object sender, EventArgs e)
+        private void Input_checkBox_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (Input_checkBox.Checked)
+            {
+                Properties.Settings.Default.blockInput = true;
+                return;
+            }
+            Properties.Settings.Default.blockInput = false;
         }
-        private void League_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
 
+        private void Windows_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Windows_checkBox.Checked)
+            {
+                Properties.Settings.Default.windowsClickMenu = true;
+                return;
+            }
+            Properties.Settings.Default.windowsClickMenu = false;
+        }
+
+        private void Language_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.prefLanguage = Language_comboBox.Text;
+            Console.WriteLine(Properties.Settings.Default.prefLanguage);
         }
     }
 }

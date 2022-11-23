@@ -1,8 +1,6 @@
 ﻿using Auto_Login.Classes;
 using Auto_Login.UI;
 using Newtonsoft.Json;
-using SweetAlertSharp;
-using SweetAlertSharp.Enums;
 using System;
 using System.Drawing;
 using System.IO;
@@ -61,8 +59,8 @@ namespace Auto_Login
             }
             FILE_EXISTS = false;
             Log("Data file not found");
-            SweetAlertResult result = SweetAlert.Show("Account Data", "Unable to retrieve account data, would you like to create a new data file?", SweetAlertButton.YesNo, SweetAlertImage.QUESTION);
-            if(result == SweetAlertResult.YES)
+            DialogResult result = MessageBox.Show("Unable to retrieve account data, would you like to create a new data file?", "Account Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if(result == DialogResult.Yes)
                 File.Create(JSON_FILE).Close();
         }
 
@@ -124,7 +122,7 @@ namespace Auto_Login
 
             if (Username_textBox.Text.Length < 1 || Password_textBox.Text.Length < 1 || Server_comboBox.Text.Length < 1)
             {
-                SweetAlertResult result = SweetAlert.Show("Bad Credentials", "Please enter a valid login to register", SweetAlertButton.OK, SweetAlertImage.ERROR);
+                MessageBox.Show("Please enter a valid login to register", "Bad Credentials", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -157,14 +155,11 @@ namespace Auto_Login
         {
             if(Account_comboBox.SelectedItem != null)
             {
-                if(Properties.Settings.Default.showAlerts)
-                    SweetAlert.Show("Do not move mouse", "Do not move the mouse while logging in", SweetAlertButton.OK, SweetAlertImage.INFORMATION);
-
                 UserAccount account = (UserAccount)AccountController.userAccounts[0];
                 account = AccountController.GetAccount(Account_comboBox.Text);
                 Log($"Loading account: {Account_comboBox.SelectedItem}", true);
                 Login.Start(account.username, Cryptography.Decrypt(account.password, Properties.Settings.Default.encryption_Key), account.region);
-                WindowState = FormWindowState.Minimized;
+                //WindowState = FormWindowState.Minimized;
             }
         }
 
@@ -190,7 +185,6 @@ namespace Auto_Login
 
         public class JsonObject
         {
-            //  {"count":1,"accounts":[{"username":"1234","password":"qwert"},{"username":"1234","password":"qwert"}]}
             public int count { get; set; }
             public Account[] accounts { get; set; }
         }
@@ -225,9 +219,6 @@ namespace Auto_Login
 
         private void taskbar_Menu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (Properties.Settings.Default.showAlerts)
-                SweetAlert.Show("Do not move mouse", "Do not move the mouse while logging in", SweetAlertButton.OK, SweetAlertImage.INFORMATION);
-
             UserAccount account = (UserAccount)AccountController.userAccounts[0];
             account = AccountController.GetAccount(e.ClickedItem.Text);
             Log($"Loading account: {Account_comboBox.SelectedItem}", true);

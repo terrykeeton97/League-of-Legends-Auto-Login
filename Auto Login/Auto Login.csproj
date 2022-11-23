@@ -39,6 +39,9 @@
     <ApplicationIcon>Logo\Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoItX3.Assembly, Version=3.0.0.0, Culture=neutral, PublicKeyToken=a646454c8d475470, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoItX.Dotnet.3.3.14.5\lib\AutoItX3.Assembly.dll</HintPath>
@@ -212,7 +215,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\AccountController.cs" />
-    <Compile Include="Classes\ClientSettings.cs" />
     <Compile Include="Classes\Encryption.cs" />
     <Compile Include="Classes\FileController.cs" />
     <Compile Include="Classes\Imports.cs" />
@@ -247,6 +249,7 @@
     <EmbeddedResource Include="UI\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

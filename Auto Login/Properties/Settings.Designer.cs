@@ -37,10 +37,10 @@ namespace Auto_Login.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int prefLanguage {
+        [global::System.Configuration.DefaultSettingValueAttribute("en_GB")]
+        public string prefLanguage {
             get {
-                return ((int)(this["prefLanguage"]));
+                return ((string)(this["prefLanguage"]));
             }
             set {
                 this["prefLanguage"] = value;
@@ -85,18 +85,6 @@ namespace Auto_Login.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool showAlerts {
-            get {
-                return ((bool)(this["showAlerts"]));
-            }
-            set {
-                this["showAlerts"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool persistedSettings {
             get {
@@ -104,6 +92,30 @@ namespace Auto_Login.Properties {
             }
             set {
                 this["persistedSettings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool blockInput {
+            get {
+                return ((bool)(this["blockInput"]));
+            }
+            set {
+                this["blockInput"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool windowsClickMenu {
+            get {
+                return ((bool)(this["windowsClickMenu"]));
+            }
+            set {
+                this["windowsClickMenu"] = value;
             }
         }
     }

@@ -5,7 +5,7 @@ namespace Auto_Login.Classes
 {
     internal class FileController
     {
-        internal static void Init(string region)
+        internal static void Init(string region, string prefLanguage)
         {
             if(Properties.Settings.Default.persistedSettings)
             {
@@ -15,14 +15,30 @@ namespace Auto_Login.Classes
             File.SetAttributes(LocalClientController.ClientInfo() + @"\Config\game.cfg", FileAttributes.Normal);
             File.SetAttributes(LocalClientController.ClientInfo() + @"\Config\PersistedSettings.json", FileAttributes.Normal);
 
-            var deserializer = new DeserializerBuilder().Build();
-            var settings = deserializer.Deserialize<object>(File.ReadAllText(LocalClientController.ClientInfo(true)));
+            var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
+            var serializer = new SerializerBuilder().Build();
+            var settings = deserializer.Deserialize<YamlObject>(File.ReadAllText(LocalClientController.ClientInfo(true)));
+            settings.Install.Globals.Region = region;
+            settings.Install.Globals.Locale = prefLanguage;
+            File.WriteAllText(LocalClientController.ClientInfo(true), serializer.Serialize(settings));
         }
     }
-    class YamlObject
+    public class YamlObject
     {
-        public string install { get; set; }
-        public string locale { get; set; }
-        public string region { get; set; }
+        [YamlMember(Alias = "install")]
+        public Install Install { get; set; }
+    }
+
+    public class Install
+    {
+        [YamlMember(Alias = "globals")]
+        public Globals Globals { get; set; }
+    }
+    public class Globals
+    {
+        [YamlMember(Alias = "locale")]
+        public string Locale { get; set; }
+        [YamlMember(Alias = "region")]
+        public string Region { get; set; }
     }
 }

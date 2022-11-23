@@ -5,8 +5,8 @@
     <Setting Name="encryption_Key" Type="System.String" Scope="User">
       <Value Profile="(Default)">R5LeZYXebMn8F/N&amp;</Value>
     </Setting>
-    <Setting Name="prefLanguage" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="prefLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">en_GB</Value>
     </Setting>
     <Setting Name="passwordChar" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -17,10 +17,13 @@
     <Setting Name="startMinimized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="showAlerts" Type="System.Boolean" Scope="User">
+    <Setting Name="persistedSettings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="blockInput" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="persistedSettings" Type="System.Boolean" Scope="User">
+    <Setting Name="windowsClickMenu" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

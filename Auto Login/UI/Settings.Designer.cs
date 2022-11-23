@@ -32,8 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.Windows_checkBox = new System.Windows.Forms.CheckBox();
+            this.Input_checkBox = new System.Windows.Forms.CheckBox();
             this.Offline_checkBox = new System.Windows.Forms.CheckBox();
-            this.Alerts_checkBox = new System.Windows.Forms.CheckBox();
             this.PersisSettings_checkBox = new System.Windows.Forms.CheckBox();
             this.Minimized_checkBox = new System.Windows.Forms.CheckBox();
             this.Default_Btn = new System.Windows.Forms.Button();
@@ -48,8 +49,6 @@
             this.HEADER_LABEL1 = new System.Windows.Forms.Label();
             this.Generate_Btn = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.Valorant_checkBox = new System.Windows.Forms.CheckBox();
-            this.League_checkBox = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -65,10 +64,9 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.League_checkBox);
-            this.tabPage1.Controls.Add(this.Valorant_checkBox);
+            this.tabPage1.Controls.Add(this.Windows_checkBox);
+            this.tabPage1.Controls.Add(this.Input_checkBox);
             this.tabPage1.Controls.Add(this.Offline_checkBox);
-            this.tabPage1.Controls.Add(this.Alerts_checkBox);
             this.tabPage1.Controls.Add(this.PersisSettings_checkBox);
             this.tabPage1.Controls.Add(this.Minimized_checkBox);
             this.tabPage1.Controls.Add(this.Default_Btn);
@@ -90,26 +88,40 @@
             this.tabPage1.Text = "Encryption";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // Windows_checkBox
+            // 
+            this.Windows_checkBox.AutoSize = true;
+            this.Windows_checkBox.Location = new System.Drawing.Point(137, 209);
+            this.Windows_checkBox.Name = "Windows_checkBox";
+            this.Windows_checkBox.Size = new System.Drawing.Size(134, 17);
+            this.Windows_checkBox.TabIndex = 40;
+            this.Windows_checkBox.Text = "Add to Windows Menu";
+            this.toolTip.SetToolTip(this.Windows_checkBox, "Add this program to the Windows right-click menu for easy access");
+            this.Windows_checkBox.UseVisualStyleBackColor = true;
+            this.Windows_checkBox.CheckedChanged += new System.EventHandler(this.Windows_checkBox_CheckedChanged);
+            // 
+            // Input_checkBox
+            // 
+            this.Input_checkBox.AutoSize = true;
+            this.Input_checkBox.Location = new System.Drawing.Point(137, 186);
+            this.Input_checkBox.Name = "Input_checkBox";
+            this.Input_checkBox.Size = new System.Drawing.Size(80, 17);
+            this.Input_checkBox.TabIndex = 39;
+            this.Input_checkBox.Text = "Block Input";
+            this.toolTip.SetToolTip(this.Input_checkBox, "Block user input while logging in (recommended)\r\nYou can CTRL+ALT+DEL if you get " +
+        "stuck");
+            this.Input_checkBox.UseVisualStyleBackColor = true;
+            this.Input_checkBox.CheckedChanged += new System.EventHandler(this.Input_checkBox_CheckedChanged);
+            // 
             // Offline_checkBox
             // 
             this.Offline_checkBox.AutoSize = true;
-            this.Offline_checkBox.Location = new System.Drawing.Point(146, 186);
+            this.Offline_checkBox.Location = new System.Drawing.Point(137, 163);
             this.Offline_checkBox.Name = "Offline_checkBox";
             this.Offline_checkBox.Size = new System.Drawing.Size(93, 17);
             this.Offline_checkBox.TabIndex = 38;
             this.Offline_checkBox.Text = "Appear Offline";
             this.Offline_checkBox.UseVisualStyleBackColor = true;
-            // 
-            // Alerts_checkBox
-            // 
-            this.Alerts_checkBox.AutoSize = true;
-            this.Alerts_checkBox.Location = new System.Drawing.Point(146, 163);
-            this.Alerts_checkBox.Name = "Alerts_checkBox";
-            this.Alerts_checkBox.Size = new System.Drawing.Size(82, 17);
-            this.Alerts_checkBox.TabIndex = 37;
-            this.Alerts_checkBox.Text = "Show Alerts";
-            this.Alerts_checkBox.UseVisualStyleBackColor = true;
-            this.Alerts_checkBox.CheckedChanged += new System.EventHandler(this.Alerts_checkBox_CheckedChanged);
             // 
             // PersisSettings_checkBox
             // 
@@ -119,7 +131,7 @@
             this.PersisSettings_checkBox.Size = new System.Drawing.Size(138, 17);
             this.PersisSettings_checkBox.TabIndex = 36;
             this.PersisSettings_checkBox.Text = "Save Persisted Settings";
-            this.toolTip.SetToolTip(this.PersisSettings_checkBox, "Save your hotkey settings from the last logged in account.");
+            this.toolTip.SetToolTip(this.PersisSettings_checkBox, "Save you in-game settings from your last account (un-tested)\r\n");
             this.PersisSettings_checkBox.UseVisualStyleBackColor = true;
             this.PersisSettings_checkBox.CheckedChanged += new System.EventHandler(this.PersisSettings_checkBox_CheckedChanged);
             // 
@@ -179,19 +191,19 @@
             // 
             // Language_comboBox
             // 
-            this.Language_comboBox.DisplayMember = "0";
             this.Language_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Language_comboBox.FormattingEnabled = true;
             this.Language_comboBox.Items.AddRange(new object[] {
-            "English",
-            "German",
-            "Spanish",
-            "Russian",
-            "French"});
+            "en_GB",
+            "de_DE",
+            "fr_FR",
+            "es_MX",
+            "ru_RU"});
             this.Language_comboBox.Location = new System.Drawing.Point(284, 184);
             this.Language_comboBox.Name = "Language_comboBox";
             this.Language_comboBox.Size = new System.Drawing.Size(135, 21);
             this.Language_comboBox.TabIndex = 32;
+            this.Language_comboBox.SelectedIndexChanged += new System.EventHandler(this.Language_comboBox_SelectedIndexChanged);
             // 
             // ShowHide_checkBox
             // 
@@ -253,28 +265,6 @@
             this.Generate_Btn.UseVisualStyleBackColor = true;
             this.Generate_Btn.Click += new System.EventHandler(this.Generate_Btn_Click);
             // 
-            // Valorant_checkBox
-            // 
-            this.Valorant_checkBox.AutoSize = true;
-            this.Valorant_checkBox.Location = new System.Drawing.Point(146, 209);
-            this.Valorant_checkBox.Name = "Valorant_checkBox";
-            this.Valorant_checkBox.Size = new System.Drawing.Size(123, 17);
-            this.Valorant_checkBox.TabIndex = 39;
-            this.Valorant_checkBox.Text = "Login Valorant Client";
-            this.Valorant_checkBox.UseVisualStyleBackColor = true;
-            this.Valorant_checkBox.CheckedChanged += new System.EventHandler(this.Valorant_checkBox_CheckedChanged);
-            // 
-            // League_checkBox
-            // 
-            this.League_checkBox.AutoSize = true;
-            this.League_checkBox.Location = new System.Drawing.Point(146, 229);
-            this.League_checkBox.Name = "League_checkBox";
-            this.League_checkBox.Size = new System.Drawing.Size(120, 17);
-            this.League_checkBox.TabIndex = 40;
-            this.League_checkBox.Text = "Login League Client";
-            this.League_checkBox.UseVisualStyleBackColor = true;
-            this.League_checkBox.CheckedChanged += new System.EventHandler(this.League_checkBox_CheckedChanged);
-            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -311,9 +301,8 @@
         private System.Windows.Forms.CheckBox Startup_checkBox;
         private System.Windows.Forms.CheckBox PersisSettings_checkBox;
         private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.CheckBox Alerts_checkBox;
         private System.Windows.Forms.CheckBox Offline_checkBox;
-        private System.Windows.Forms.CheckBox League_checkBox;
-        private System.Windows.Forms.CheckBox Valorant_checkBox;
+        private System.Windows.Forms.CheckBox Input_checkBox;
+        private System.Windows.Forms.CheckBox Windows_checkBox;
     }
 }
