@@ -105,7 +105,7 @@
             this.PersisSettings_checkBox.Size = new System.Drawing.Size(138, 17);
             this.PersisSettings_checkBox.TabIndex = 36;
             this.PersisSettings_checkBox.Text = "Save Persisted Settings";
-            this.toolTip.SetToolTip(this.PersisSettings_checkBox, "Save you in-game settings from your last account (un-tested)\r\n");
+            this.toolTip.SetToolTip(this.PersisSettings_checkBox, "Save your in-game settings from your last account (un-tested)\r\n");
             this.PersisSettings_checkBox.UseVisualStyleBackColor = true;
             this.PersisSettings_checkBox.CheckedChanged += new System.EventHandler(this.PersisSettings_checkBox_CheckedChanged);
             // 

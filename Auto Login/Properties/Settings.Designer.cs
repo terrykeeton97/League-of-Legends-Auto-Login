@@ -106,17 +106,5 @@ namespace Auto_Login.Properties {
                 this["blockInput"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool windowsClickMenu {
-            get {
-                return ((bool)(this["windowsClickMenu"]));
-            }
-            set {
-                this["windowsClickMenu"] = value;
-            }
-        }
     }
 }

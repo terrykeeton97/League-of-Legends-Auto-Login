@@ -14,9 +14,21 @@ namespace Auto_Login.Classes
         internal static void RestartClient()
         {
             bool isOpen = false;
+            Process[] proc = Process.GetProcesses();
             var client = new Process { StartInfo = new ProcessStartInfo { FileName = ClientInfo(false, true) } };
+            uint lClient = AutoItX.WinGetProcess("League of Legends");
             try
             {
+                foreach (Process prs in proc)
+                {
+                    if (prs.Id == lClient)
+                    {
+                        isOpen = true;
+                        CloseLeagueClient();
+                        prs.WaitForExit();
+                    }
+                }
+
                 foreach (Process process in Process.GetProcessesByName("RiotClientUx"))
                 {
                     isOpen = true;
@@ -33,6 +45,7 @@ namespace Auto_Login.Classes
             if (isOpen)
             {
                 Program.main.Log("Starting client in 10 seconds");
+                Program.main.Log("League client can take some time to close...");
                 Thread.Sleep(10000);
             }
 
@@ -45,7 +58,7 @@ namespace Auto_Login.Classes
 
         internal static void Init()
         {
-            Program.main.Log("Restarting client");
+            Program.main.Log("Initializing");
             RestartClient();
             hWnd = Imports.FindWindow("RCLIENT", "Riot Client Main");
             if (hWnd != IntPtr.Zero)
@@ -77,12 +90,27 @@ namespace Auto_Login.Classes
             path = reg.ToString();
             return path;
         }
-
-        private static bool IsRunning(Process process)
+        private static void CloseLeagueClient()
         {
-            try { Process.GetProcessById(process.Id); }
-            catch (Exception) { return false; }
-            return true;
+            hWnd = Imports.FindWindow("RCLIENT", "League of Legends");
+            if (hWnd != IntPtr.Zero)
+            {
+                Program.main.Log("Moving League window to 0,0");
+                Imports.SetWindowPos(hWnd, IntPtr.Zero, 0, 0, 0, 0, Imports.SWP_NOSIZE | Imports.SWP_NOZORDER);
+                var WINDOW_RECT = AutoItX.WinGetClientSize(hWnd);
+                Program.main.Log($"League window size: {WINDOW_RECT.Width} | {WINDOW_RECT.Height}");
+
+                if(Properties.Settings.Default.blockInput)
+                    Imports.BlockInput(true);
+
+                AutoItX.PixelSearch(WINDOW_RECT, 0xA09B8C);
+                Program.main.Log("Moving mouse");
+                AutoItX.MouseMove(1574, 18);
+                AutoItX.MouseClick("LEFT");
+                AutoItX.MouseMove(724, 502);
+                AutoItX.MouseClick("LEFT");
+                Imports.BlockInput(false);
+            }
         }
     }
 }

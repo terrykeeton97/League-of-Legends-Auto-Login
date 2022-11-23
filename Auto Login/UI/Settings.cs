@@ -115,16 +115,6 @@ namespace Auto_Login.UI
             Properties.Settings.Default.blockInput = false;
         }
 
-        private void Windows_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (Windows_checkBox.Checked)
-            {
-                Properties.Settings.Default.windowsClickMenu = true;
-                return;
-            }
-            Properties.Settings.Default.windowsClickMenu = false;
-        }
-
         private void Language_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.prefLanguage = Language_comboBox.Text;

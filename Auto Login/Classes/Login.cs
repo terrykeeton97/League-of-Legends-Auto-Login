@@ -12,8 +12,11 @@ namespace Auto_Login.Classes
             LocalClientController.Init();
             Program.main.Log("Getting window size");
             var WINDOW_RECT = AutoItX.WinGetClientSize(LocalClientController.hWnd);
-            Program.main.Log($"Window size: {WINDOW_RECT.Width} | {WINDOW_RECT.Height}");            
-            Imports.BlockInput(true);
+            Program.main.Log($"Window size: {WINDOW_RECT.Width} | {WINDOW_RECT.Height}");        
+            
+            if (Properties.Settings.Default.blockInput)
+                Imports.BlockInput(true);
+
             AutoItX.PixelSearch(WINDOW_RECT, 0xEDEDED);
             Program.main.Log("Moving mouse");
             AutoItX.MouseMove(236, 254);
