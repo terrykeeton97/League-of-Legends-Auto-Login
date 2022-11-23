@@ -32,9 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.Windows_checkBox = new System.Windows.Forms.CheckBox();
             this.Input_checkBox = new System.Windows.Forms.CheckBox();
-            this.Offline_checkBox = new System.Windows.Forms.CheckBox();
             this.PersisSettings_checkBox = new System.Windows.Forms.CheckBox();
             this.Minimized_checkBox = new System.Windows.Forms.CheckBox();
             this.Default_Btn = new System.Windows.Forms.Button();
@@ -64,9 +62,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.Windows_checkBox);
             this.tabPage1.Controls.Add(this.Input_checkBox);
-            this.tabPage1.Controls.Add(this.Offline_checkBox);
             this.tabPage1.Controls.Add(this.PersisSettings_checkBox);
             this.tabPage1.Controls.Add(this.Minimized_checkBox);
             this.tabPage1.Controls.Add(this.Default_Btn);
@@ -88,22 +84,10 @@
             this.tabPage1.Text = "Encryption";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // Windows_checkBox
-            // 
-            this.Windows_checkBox.AutoSize = true;
-            this.Windows_checkBox.Location = new System.Drawing.Point(137, 209);
-            this.Windows_checkBox.Name = "Windows_checkBox";
-            this.Windows_checkBox.Size = new System.Drawing.Size(134, 17);
-            this.Windows_checkBox.TabIndex = 40;
-            this.Windows_checkBox.Text = "Add to Windows Menu";
-            this.toolTip.SetToolTip(this.Windows_checkBox, "Add this program to the Windows right-click menu for easy access");
-            this.Windows_checkBox.UseVisualStyleBackColor = true;
-            this.Windows_checkBox.CheckedChanged += new System.EventHandler(this.Windows_checkBox_CheckedChanged);
-            // 
             // Input_checkBox
             // 
             this.Input_checkBox.AutoSize = true;
-            this.Input_checkBox.Location = new System.Drawing.Point(137, 186);
+            this.Input_checkBox.Location = new System.Drawing.Point(132, 163);
             this.Input_checkBox.Name = "Input_checkBox";
             this.Input_checkBox.Size = new System.Drawing.Size(80, 17);
             this.Input_checkBox.TabIndex = 39;
@@ -112,16 +96,6 @@
         "stuck");
             this.Input_checkBox.UseVisualStyleBackColor = true;
             this.Input_checkBox.CheckedChanged += new System.EventHandler(this.Input_checkBox_CheckedChanged);
-            // 
-            // Offline_checkBox
-            // 
-            this.Offline_checkBox.AutoSize = true;
-            this.Offline_checkBox.Location = new System.Drawing.Point(137, 163);
-            this.Offline_checkBox.Name = "Offline_checkBox";
-            this.Offline_checkBox.Size = new System.Drawing.Size(93, 17);
-            this.Offline_checkBox.TabIndex = 38;
-            this.Offline_checkBox.Text = "Appear Offline";
-            this.Offline_checkBox.UseVisualStyleBackColor = true;
             // 
             // PersisSettings_checkBox
             // 
@@ -301,8 +275,6 @@
         private System.Windows.Forms.CheckBox Startup_checkBox;
         private System.Windows.Forms.CheckBox PersisSettings_checkBox;
         private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.CheckBox Offline_checkBox;
         private System.Windows.Forms.CheckBox Input_checkBox;
-        private System.Windows.Forms.CheckBox Windows_checkBox;
     }
 }
