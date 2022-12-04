@@ -14,12 +14,12 @@ namespace Auto_Login.Classes
         internal static void RestartClient()
         {
             bool isOpen = false;
-            Process[] proc = Process.GetProcesses();
+            var proc = Process.GetProcesses();
             var client = new Process { StartInfo = new ProcessStartInfo { FileName = ClientInfo(false, true) } };
             uint lClient = AutoItX.WinGetProcess("League of Legends");
             try
             {
-                foreach (Process prs in proc)
+                foreach (var prs in proc)
                 {
                     if (prs.Id == lClient)
                     {
@@ -29,7 +29,7 @@ namespace Auto_Login.Classes
                     }
                 }
 
-                foreach (Process process in Process.GetProcessesByName("RiotClientUx"))
+                foreach (var process in Process.GetProcessesByName("RiotClientUx"))
                 {
                     isOpen = true;
                     process.Refresh();

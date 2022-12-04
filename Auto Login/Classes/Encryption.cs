@@ -26,14 +26,14 @@ namespace Auto_Login.Classes
         public static string Encrypt<T>(string value, string password)
                 where T : SymmetricAlgorithm, new()
         {
-            byte[] vectorBytes = ASCIIEncoding.ASCII.GetBytes(_vector);
-            byte[] saltBytes = ASCIIEncoding.ASCII.GetBytes(_salt);
-            byte[] valueBytes = UTF8Encoding.UTF8.GetBytes(value);
+            byte[] vectorBytes = Encoding.ASCII.GetBytes(_vector);
+            byte[] saltBytes = Encoding.ASCII.GetBytes(_salt);
+            byte[] valueBytes = Encoding.UTF8.GetBytes(value);
 
             byte[] encrypted;
-            using (T cipher = new T())
+            using (var cipher = new T())
             {
-                PasswordDeriveBytes _passwordBytes =
+                var _passwordBytes =
                     new PasswordDeriveBytes(password, saltBytes, _hash, _iterations);
                 byte[] keyBytes = _passwordBytes.GetBytes(_keySize / 8);
 
@@ -41,9 +41,9 @@ namespace Auto_Login.Classes
 
                 using (ICryptoTransform encryptor = cipher.CreateEncryptor(keyBytes, vectorBytes))
                 {
-                    using (MemoryStream to = new MemoryStream())
+                    using (var to = new MemoryStream())
                     {
-                        using (CryptoStream writer = new CryptoStream(to, encryptor, CryptoStreamMode.Write))
+                        using (var writer = new CryptoStream(to, encryptor, CryptoStreamMode.Write))
                         {
                             writer.Write(valueBytes, 0, valueBytes.Length);
                             writer.FlushFinalBlock();
@@ -62,8 +62,8 @@ namespace Auto_Login.Classes
         }
         public static string Decrypt<T>(string value, string password) where T : SymmetricAlgorithm, new()
         {
-            byte[] vectorBytes = ASCIIEncoding.ASCII.GetBytes(_vector);
-            byte[] saltBytes = ASCIIEncoding.ASCII.GetBytes(_salt);
+            byte[] vectorBytes = Encoding.ASCII.GetBytes(_vector);
+            byte[] saltBytes = Encoding.ASCII.GetBytes(_salt);
             byte[] valueBytes = Convert.FromBase64String(value);
 
             byte[] decrypted;
@@ -71,18 +71,18 @@ namespace Auto_Login.Classes
 
             using (T cipher = new T())
             {
-                PasswordDeriveBytes _passwordBytes = new PasswordDeriveBytes(password, saltBytes, _hash, _iterations);
+                var _passwordBytes = new PasswordDeriveBytes(password, saltBytes, _hash, _iterations);
                 byte[] keyBytes = _passwordBytes.GetBytes(_keySize / 8);
 
                 cipher.Mode = CipherMode.CBC;
 
                 try
                 {
-                    using (ICryptoTransform decryptor = cipher.CreateDecryptor(keyBytes, vectorBytes))
+                    using (var decryptor = cipher.CreateDecryptor(keyBytes, vectorBytes))
                     {
-                        using (MemoryStream from = new MemoryStream(valueBytes))
+                        using (var from = new MemoryStream(valueBytes))
                         {
-                            using (CryptoStream reader = new CryptoStream(from, decryptor, CryptoStreamMode.Read))
+                            using (var reader = new CryptoStream(from, decryptor, CryptoStreamMode.Read))
                             {
                                 decrypted = new byte[valueBytes.Length];
                                 decryptedByteCount = reader.Read(decrypted, 0, decrypted.Length);
@@ -92,7 +92,7 @@ namespace Auto_Login.Classes
                 }
                 catch (Exception)
                 {
-                    return String.Empty;
+                    return string.Empty; //TODO fix this lmao. We should never have empty try catches, just hides issues.
                 }
 
                 cipher.Clear();

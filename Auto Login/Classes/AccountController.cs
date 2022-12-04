@@ -1,43 +1,37 @@
 ﻿using SweetAlertSharp.Enums;
 using SweetAlertSharp;
-using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Auto_Login.Classes
 {
     static class AccountController
     {
-        public static ArrayList userAccounts = new ArrayList();
+        private static List<UserAccount> UserAccounts = new List<UserAccount>();
 
+        public static IReadOnlyCollection<UserAccount> GetAccounts()
+        {
+            return UserAccounts;
+        }
         public static void AddAccount(string username, string password, string region)
         {
-            foreach (var item in userAccounts)
+            if (UserAccounts.Any(x => string.Equals(x.username, username, StringComparison.OrdinalIgnoreCase)))
             {
-                UserAccount temp = (UserAccount)item;
-                if (temp.username.ToLower().Equals(username.ToLower()))
-                {
-                    SweetAlert.Show("Error", "Account already exists", SweetAlertButton.YesNo, SweetAlertImage.ERROR);
-                    return;
-                }
+                SweetAlert.Show("Error", "Account already exists", SweetAlertButton.YesNo, SweetAlertImage.ERROR);
+                return;
             }
-            userAccounts.Add(new UserAccount { username = username, password = password, region = region });
+            UserAccounts.Add(new UserAccount { username = username, password = password, region = region });
         }
 
         public static UserAccount GetAccount(string username)
         {
-            foreach (var item in userAccounts)
-            {
-                UserAccount account = (UserAccount)item;
-                if (account.username.ToLower().Equals(username.ToLower()))
-                {
-                    return account;
-                }
-            }
-            return null;
+            return UserAccounts.FirstOrDefault(x => string.Equals(x.username, username, StringComparison.OrdinalIgnoreCase));
         }
 
         public static void RemoveAccount(UserAccount account)
         {
-            userAccounts.Remove(account);
+            UserAccounts.Remove(account);
         }
     }
 

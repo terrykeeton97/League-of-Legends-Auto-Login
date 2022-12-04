@@ -1,17 +1,19 @@
 ﻿using Auto_Login.Classes;
+using Auto_Login.Mappers;
 using Auto_Login.UI;
 using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Auto_Login
 {
     public partial class Main : Form
     {
-        public string JSON_FILE = AppDomain.CurrentDomain.BaseDirectory + "\\accounts.json";
-        public string LOG_FILE = AppDomain.CurrentDomain.BaseDirectory + "\\log.txt";
+        public readonly string JSON_FILE = AppDomain.CurrentDomain.BaseDirectory + "\\accounts.json";
+        public readonly string LOG_FILE = AppDomain.CurrentDomain.BaseDirectory + "\\log.txt";
         public bool FILE_EXISTS;
 
         public Main()
@@ -74,26 +76,21 @@ namespace Auto_Login
 
         private void GetAccountData()
         {
-            var JSON_ACCOUNTS = JsonConvert.DeserializeObject<JsonObject>(File.ReadAllText(JSON_FILE));
-            if(JSON_ACCOUNTS == null) { return; }
-            for (int i = 0; i < JSON_ACCOUNTS.count; i++)
+            var jsonFile = JsonConvert.DeserializeObject<JsonObject>(File.ReadAllText(JSON_FILE));
+            if(jsonFile == null) return;
+            foreach (var account in jsonFile.accounts)
             {
-                AccountController.AddAccount(JSON_ACCOUNTS.accounts[i].username, JSON_ACCOUNTS.accounts[i].password, JSON_ACCOUNTS.accounts[i].region);
-                Log("Adding Account: " + JSON_ACCOUNTS.accounts[i].username + " [" + JSON_ACCOUNTS.accounts[i].region + "]");
+                AccountController.AddAccount(account.username, account.password, account.region);
+                Log("Adding Account: " + account.username + " [" + account.region + "]");
             }
             UpdateAccountList();
         }
 
         private void WriteAccountData()
         {
-            Account[] accArray = new Account[AccountController.userAccounts.Count];
-            for (int i = 0; i < AccountController.userAccounts.Count; i++)
-            {
-                UserAccount item = (UserAccount)AccountController.userAccounts[i];
-                accArray[i] = new Account { username = item.username, password = item.password, region = item.region };
-            }
-            string json = JsonConvert.SerializeObject(new JsonObject { count = accArray.Length, accounts = accArray });
-            File.WriteAllText(JSON_FILE, json);
+            var accountsToSerialise = AccountController.GetAccounts().Select(x => AccountMapper.Map(x)).ToArray();
+            string accountsJson = JsonConvert.SerializeObject(new JsonObject { count = accountsToSerialise.Length, accounts = accountsToSerialise });
+            File.WriteAllText(JSON_FILE, accountsJson);
             Log("Account data saved");
         }
 
@@ -102,7 +99,7 @@ namespace Auto_Login
             Account_comboBox.Items.Clear();
             Remove_comboBox.Items.Clear();
 
-            foreach (UserAccount item in AccountController.userAccounts)
+            foreach (var item in AccountController.GetAccounts())
             {
                 Account_comboBox.Items.Add(item.username);
                 Remove_comboBox.Items.Add(item.username + " [" + item.region + "]");
@@ -138,8 +135,8 @@ namespace Auto_Login
             if (Remove_comboBox.Items.Count > 0)
             {
                 Log("Removing selected account...");
-                UserAccount ACCOUNT = (UserAccount)AccountController.userAccounts[Remove_comboBox.SelectedIndex];
-                AccountController.RemoveAccount(ACCOUNT);
+                var selectedAccount = AccountController.GetAccounts().ElementAt(Remove_comboBox.SelectedIndex);
+                AccountController.RemoveAccount(selectedAccount);
                 UpdateAccountList();
                 WriteAccountData();
                 Remove_comboBox.Text = "";
@@ -153,15 +150,12 @@ namespace Auto_Login
 
         private void Load_Btn_Click(object sender, EventArgs e)
         {
-            if(Account_comboBox.SelectedItem != null)
-            {
-                UserAccount account = (UserAccount)AccountController.userAccounts[0];
-                account = AccountController.GetAccount(Account_comboBox.Text);
-                Log($"Loading account: {Account_comboBox.SelectedItem}", true);
-                Login.Start(account.username, Cryptography.Decrypt(account.password, Properties.Settings.Default.encryption_Key), account.region);
-                //WindowState = FormWindowState.Minimized;
-            }
-        }
+            if (Account_comboBox.SelectedItem == null) return;
+          
+            var account = AccountController.GetAccount(Account_comboBox.Text);
+            Log($"Loading account: {Account_comboBox.SelectedItem}", true);
+            Login.Start(account.username, Cryptography.Decrypt(account.password, Properties.Settings.Default.encryption_Key), account.region);
+         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -179,7 +173,7 @@ namespace Auto_Login
             }
             catch(Exception error)
             {
-                Log("Error: " + error.ToString());
+                Log("Error: " + error.ToString()); // TODO fix
             }
         }
 
@@ -219,8 +213,8 @@ namespace Auto_Login
 
         private void taskbar_Menu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            UserAccount account = (UserAccount)AccountController.userAccounts[0];
-            account = AccountController.GetAccount(e.ClickedItem.Text);
+            var account = AccountController.GetAccount(e.ClickedItem.Text);
+            if (account == null) return; //TODO handle this better. We should throw an exception / error.
             Log($"Loading account: {Account_comboBox.SelectedItem}", true);
             Login.Start(account.username, Cryptography.Decrypt(account.password, Properties.Settings.Default.encryption_Key), account.region);
         }
